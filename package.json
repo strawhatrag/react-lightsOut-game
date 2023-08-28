@@ -2,14 +2,17 @@
   "name": "react-lights-out",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://strawhatrag.github.io/react-lightsOut-game",
   "dependencies": {
     "react": "^16.6.0",
     "react-dom": "^16.6.0",
     "react-scripts": "2.0.5"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
