@@ -1,7 +1,6 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Cell from "./Cell";
-import './Board.css';
-
+import "./Board.css";
 
 /** Game board of Lights out.
  *
@@ -30,28 +29,45 @@ import './Board.css';
  **/
 
 class Board extends Component {
+  static defaultProps = {
+    ncols: 5,
+    nrows: 5,
+    chanceLightStartsOn: 0.25,
+  };
 
   constructor(props) {
     super(props);
-
-    // TODO: set initial state
+    this.state = {
+      hasWon: false,
+      board: this.createBoard(),
+    };
   }
 
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
 
   createBoard() {
     let board = [];
-    // TODO: create array-of-arrays of true/false values
-    return board
+
+    for (let r = 0; r < this.props.nrows; r++) {
+      let row = [];
+
+      for (let c = 0; c < this.props.ncols; c++) {
+        row.push(Math.random() < this.props.chanceLightStartsOn);
+      }
+
+      board.push(row);
+    }
+
+    return board;
   }
 
   /** handle changing a cell: update board & determine if winner */
 
   flipCellsAround(coord) {
-    let {ncols, nrows} = this.props;
+    console.log("filp");
+    let { ncols, nrows } = this.props;
     let board = this.state.board;
     let [y, x] = coord.split("-").map(Number);
-
 
     function flipCell(y, x) {
       // if this coord is actually on board, flip it
@@ -61,19 +77,43 @@ class Board extends Component {
       }
     }
 
-    // TODO: flip this cell and the cells around it
-
-    // win when every cell is turned off
-    // TODO: determine is the game has been won
-
-    this.setState({board, hasWon});
+    let hasWon = false;
+    flipCell(y, x);
+    flipCell(y, x - 1);
+    flipCell(y, x + 1);
+    flipCell(y - 1, x);
+    flipCell(y + 1, x);
+    this.setState({ board: board, hasWon: hasWon });
   }
-
 
   /** Render game board or winning message. */
 
   render() {
+    let tblBoard = [];
+    for (let r = 0; r < this.props.nrows; r++) {
+      let row = [];
 
+      for (let c = 0; c < this.props.ncols; c++) {
+        let coord = `${r}-${c}`;
+        row.push(
+          <Cell
+            key={coord}
+            isLit={this.state.board[r][c]}
+            flipCellsAroundMe={() => this.flipCellsAround(coord)}
+          />
+        );
+      }
+
+      tblBoard.push(<tr>{row}</tr>);
+    }
+
+    return (
+      <div>
+        <table className="Board">
+          <tbody>{tblBoard}</tbody>
+        </table>
+      </div>
+    );
     // if the game is won, just show a winning msg & render nothing else
 
     // TODO
@@ -83,6 +123,5 @@ class Board extends Component {
     // TODO
   }
 }
-
 
 export default Board;
