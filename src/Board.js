@@ -77,18 +77,23 @@ class Board extends Component {
       }
     }
 
-    let hasWon = false;
     flipCell(y, x);
     flipCell(y, x - 1);
     flipCell(y, x + 1);
     flipCell(y - 1, x);
     flipCell(y + 1, x);
+
+    let hasWon = board.every((row) => row.every((cell) => !cell));
+    console.log(hasWon);
     this.setState({ board: board, hasWon: hasWon });
   }
 
   /** Render game board or winning message. */
 
   render() {
+    if (this.state.hasWon) {
+      return <h1>You won!</h1>;
+    }
     let tblBoard = [];
     for (let r = 0; r < this.props.nrows; r++) {
       let row = [];
@@ -109,18 +114,15 @@ class Board extends Component {
 
     return (
       <div>
+        <div className="Board-title">
+          <div className="neon-orange">Lights</div>
+          <div className="neon-blue">Out</div>
+        </div>
         <table className="Board">
           <tbody>{tblBoard}</tbody>
         </table>
       </div>
     );
-    // if the game is won, just show a winning msg & render nothing else
-
-    // TODO
-
-    // make table board
-
-    // TODO
   }
 }
 
